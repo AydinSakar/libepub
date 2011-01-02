@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # A module to read, write, transform, and generally handle epub format
-# thanks to http://www.jedisaber.com/eBooks/tutorial.asp
+# thanks to http://www.jedisaber.com/eBooks/tutorial.asp for a primer on epub format
 
 import zipfile
 from lxml import etree
@@ -25,6 +25,7 @@ class Book:
         
     def _get_opf_path(self):
         """Get the path to the OPF file for this epub"""
+        # at the bare minimum, all proper epub files contain this file
         container = self.archive.open(CONTAINER_PATH)
         
         # get the location of the OPF file
