@@ -28,14 +28,18 @@ class Book:
         # at the bare minimum, all proper epub files contain this file
         container = self.archive.open(CONTAINER_PATH)
         
-        # get the location of the OPF file
-        container_etree = etree.parse(container)
-        container_root = container_etree.getroot()
+        # need to parse xml to get the location
+        doc = etree.parse(container)
+        root = doc.getroot()
         
-        base_tag = self._get_base_tag(container_root)
-        query_tag = base_tag + "rootfile"
+        # construct appropriate namespace mapping
+        ns = root.nsmap
+        ns["a"] = ns[None]
+        ns.pop(None)
         
-        opf_path = container_root.findall(query_tag)[0].get('full-path')
+        # Read the location
+        location_node = doc.xpath("/a:container/a:rootfiles/a:rootfile", namespaces=ns)[0]
+        opf_path = location_node.get('full-path')
         return opf_path
         
     def _parse_opf(self):
@@ -80,12 +84,6 @@ class Book:
         self.spine = []
         for itemref in root:
             self.spine.append(itemref.get('idref'))
-
-    def _get_base_tag(self, root):
-        """Return the base tag string for the given root element"""
-        base_index = root.tag.index('}')
-        base_tag = ".//" + root.tag[:(base_index + 1)]
-        return base_tag
 
     def __str__(self):
         return str([str(chp) for chp in self.chapters])
