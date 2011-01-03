@@ -73,24 +73,22 @@ class Book:
 
     def _parse_metadata(self, root):
         """Parse and store the info in the given metadata root"""
-        # base_tag = ".//{" + root.nsmap['dc'] + "}"
         self.metadata = {}
         for data in root:
-            tag_name = data.tag[data.tag.index('}') + 1:]
+            tag_name = data.tag.split('}')[-1]
             self.metadata[tag_name] = data.text
 
     def _parse_manifest(self, root):
         """Parse and store the item declarations in given manifest root"""
         self.manifest = {}
         for item in root:
-            self.manifest[item.get('id')] = {'href' : item.get('href'),
-                                            'media-type' : item.get('media-type')}
+            item_info = dict( [key, item.get(key)] for key in item.keys() )
+            item_id = item_info['id']
+            self.manifest[item_id] = item_info
 
     def _parse_spine(self, root):
         """Parse and store the order in the given spine root"""
-        self.spine = []
-        for itemref in root:
-            self.spine.append(itemref.get('idref'))
+        self.spine = [itemref.get('idref') for itemref in root]
 
     def __str__(self):
         return str([str(chp) for chp in self.chapters])
