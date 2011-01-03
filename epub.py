@@ -18,10 +18,14 @@ class Book:
         self._parse_opf()
         
         #get OPF_path directory
-        self.opf_path_dir = self.opf_path.split("/")[0]
+        self.opf_dir = self.opf_path.split("/")[0]
 
         # The content of this book, divided into chapters
-        self.chapters = [Chapter(self.archive.open(self.opf_path_dir + "/" + self.manifest[chapter]['href'])) for chapter in self.spine]
+        self.chapters = []
+        for chapter in self.spine:
+            path = self.opf_dir + '/' + self.manifest[chapter]['href']
+            chapter = Chapter(self.archive.open(path))
+            self.chapters.append(chapter)
         
     def _get_opf_path(self):
         """Get the path to the OPF file for this epub"""
