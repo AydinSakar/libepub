@@ -22,9 +22,9 @@ class Book:
 
         # The content of this book, divided into chapters
         self.chapters = []
-        for chapter in self.spine:
-            path = self.opf_dir + '/' + self.manifest[chapter]['href']
-            chapter = Chapter(self.archive.open(path))
+        for chapter_id in self.spine:
+            path = self.opf_dir + '/' + self.manifest[chapter_id]['href']
+            chapter = Chapter(chapter_id, self.archive.open(path))
             self.chapters.append(chapter)
         
     def _get_opf_path(self):
@@ -99,7 +99,8 @@ class Book:
 
 class Chapter:
     
-    def __init__(self, chapter_file):
+    def __init__(self, chapter_id, chapter_file):
+        self.id = chapter_id
         self.content = chapter_file.read()
 
     def __str__(self):
