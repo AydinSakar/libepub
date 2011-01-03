@@ -6,10 +6,14 @@ h2. Dependencies
 
 * lxml
 
+h2. Python version
+
+Developed and tested against Python 2.6
+
 h2. Basic Examples
 
 <notextile><pre>
-from libepub.epub import Book
+from libepub.book import Book
 
 path = 'sample.epub' # or any valid path to an .epub file
 book = Book(path)

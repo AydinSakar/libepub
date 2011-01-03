@@ -5,6 +5,7 @@
 
 import zipfile
 from lxml import etree
+from chapter import Chapter
 
 CONTAINER_PATH = "META-INF/container.xml"
 
@@ -97,15 +98,7 @@ class Book:
     def __str__(self):
         return str([str(chp) for chp in self.chapters])
 
-class Chapter:
-    
-    def __init__(self, chapter_id, chapter_file):
-        self.id = chapter_id
-        self.content = chapter_file.read()
 
-    def __str__(self):
-        html = etree.HTML(self.content)
-        return html.find(".//title").text
 
 
 if __name__ == "__main__":
