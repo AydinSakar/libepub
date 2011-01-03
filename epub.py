@@ -33,12 +33,14 @@ class Book:
         root = doc.getroot()
         
         # construct appropriate namespace mapping
+        PREFIX = "a" # arbitrary
         ns = root.nsmap
-        ns["a"] = ns[None]
+        ns[PREFIX] = ns[None]
         ns.pop(None)
         
         # Read the location
-        location_node = doc.xpath("/a:container/a:rootfiles/a:rootfile", namespaces=ns)[0]
+        query = "/%(PREFIX)s:container/%(PREFIX)s:rootfiles/%(PREFIX)s:rootfile" % {"PREFIX" : PREFIX}
+        location_node = doc.xpath(query, namespaces=ns)[0]
         opf_path = location_node.get('full-path')
         return opf_path
         
