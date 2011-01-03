@@ -50,20 +50,25 @@ class Book:
         tree = etree.parse(opf)
         root = tree.getroot()
 
-        base_tag = self._get_base_tag(root)
+         # construct appropriate namespace mapping
+        PREFIX = "a" # arbitrary
+        ns = root.nsmap
+        ns[PREFIX] = ns[None]
+        ns.pop(None)
 
         self.book_id = root.get('unique-identifier')
-
+        
+        base_query = "/%(P)s:package/%(P)s:" % {"P" : PREFIX}
         # parse Metadata
-        metadata_root = root.find(base_tag + 'metadata')
+        metadata_root = root.xpath(base_query + 'metadata', namespaces=ns)[0]
         self._parse_metadata(metadata_root)
 
         # parse Manifest
-        manifest_root = root.find(base_tag + 'manifest')
+        manifest_root = root.xpath(base_query + 'manifest', namespaces=ns)[0]
         self._parse_manifest(manifest_root)
 
         # parse Spine
-        spine_root = root.find(base_tag + 'spine')
+        spine_root = root.xpath(base_query + 'spine', namespaces=ns)[0]
         self._parse_spine(spine_root)
 
     def _parse_metadata(self, root):
