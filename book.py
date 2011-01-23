@@ -3,6 +3,7 @@
 # A module to read, write, transform, and generally handle epub format
 # thanks to http://www.jedisaber.com/eBooks/tutorial.asp for a primer on epub format
 
+import os
 import zipfile
 from lxml import etree
 from chapter import Chapter
@@ -16,6 +17,8 @@ class Book:
         
         # Path to the OPF file which points to book content
         self.opf_path = self._get_opf_path()
+        
+        # Parse the OPF file for info
         self._parse_opf()
         
         #get OPF_path directory
@@ -51,7 +54,11 @@ class Book:
         
     def _parse_opf(self):
         """Parse and store the metadata info on this epub"""
-        opf = self.archive.open(self.opf_path, "r")
+        try:
+            opf = self.archive.open(self.opf_path, "r")
+        except KeyError as e:
+            print "Badly formatted book encountered, encountered error ", e.value
+        
         tree = etree.parse(opf)
         root = tree.getroot()
 
